@@ -106,5 +106,4 @@ To work on this project, it is recommended that you have:
 
 ### Group 6 — SENGPRJ
 
-### Supervisor: Thomas Mandl (thomas.mandl@technikum-wien.at
-)
+### Supervisor: Thomas Mandl
