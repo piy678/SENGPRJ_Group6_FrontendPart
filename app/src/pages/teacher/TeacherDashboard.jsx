@@ -11,8 +11,33 @@ const TABS = ['Manage courses','Create a LEO graph','Conduct assessments','Monit
 export default function TeacherDashboard() {
   const [active, setActive] = useState(TABS[0]);
   const [hello, setHello] = useState(null);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+  // -------------------------------
+  // 1) AUTH CHECK
+  // -------------------------------
+  useEffect(() => {
+    const stored = localStorage.getItem('currentUser');
+
+    if (!stored) {
+      navigate('/login');
+      return;
+    }
+
+    const parsed = JSON.parse(stored);
+
+    if (parsed.role !== 'TEACHER') {
+      navigate('/student');
+      return;
+    }
+
+    setUser(parsed);
+  }, [navigate]);
+
+  // -------------------------------
+  // 2) HELLO API (optional)
+  // -------------------------------
   useEffect(() => {
     const base = window.config?.apiBase || 'http://localhost:8080';
     fetch(base + '/hello')
@@ -21,16 +46,26 @@ export default function TeacherDashboard() {
       .catch(() => setHello(null));
   }, []);
 
+  // -------------------------------
+  // 3) LOGOUT
+  // -------------------------------
   const handleLogout = () => {
-    if (window.history.length > 1) navigate(-1);
-    else navigate('/');
+    localStorage.removeItem('currentUser');
+    navigate('/login');
   };
+
+  // Wenn user noch null ist → NICHT rendern, sonst blinkt es kurz
+  if (!user) return null;
 
   return (
     <div>
+
       <div className="row" style={{ justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
         <div style={{ fontWeight:700 }}>
-          Teacher Dashboard {hello ? <span className="muted">— {hello}</span> : null}
+          Teacher Dashboard 
+          {hello ? <span className="muted"> — {hello}</span> : null}
+          <br />
+          <span className="muted">Logged in as: {user.username}</span>
         </div>
         <Button variant="danger" onClick={handleLogout}>Logout</Button>
       </div>
