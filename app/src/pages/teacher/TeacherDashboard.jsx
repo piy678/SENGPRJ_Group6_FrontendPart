@@ -14,9 +14,7 @@ export default function TeacherDashboard() {
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  // -------------------------------
-  // 1) AUTH CHECK
-  // -------------------------------
+  
   useEffect(() => {
     const stored = localStorage.getItem('currentUser');
 
@@ -35,9 +33,7 @@ export default function TeacherDashboard() {
     setUser(parsed);
   }, [navigate]);
 
-  // -------------------------------
-  // 2) HELLO API (optional)
-  // -------------------------------
+ 
   useEffect(() => {
     const base = window.config?.apiBase || 'http://localhost:8080';
     fetch(base + '/hello')
@@ -46,15 +42,13 @@ export default function TeacherDashboard() {
       .catch(() => setHello(null));
   }, []);
 
-  // -------------------------------
-  // 3) LOGOUT
-  // -------------------------------
+  
   const handleLogout = () => {
     localStorage.removeItem('currentUser');
     navigate('/login');
   };
 
-  // Wenn user noch null ist → NICHT rendern, sonst blinkt es kurz
+
   if (!user) return null;
 
   return (

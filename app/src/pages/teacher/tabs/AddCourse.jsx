@@ -1,42 +1,57 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Card, Field } from '../../../components/UI.jsx';
-
+import { Button, Card } from '../../../components/UI.jsx';
 
 export default function AddCourse() {
-  const navigate = useNavigate();
   const [form, setForm] = useState({
     name: '',
     students: '',
-    leos: ''
+    leos: '',
   });
+
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
 
-  const onChange = (key) => (e) => {
-    const v = e.target.value;
-    setForm(f => ({ ...f, [key]: v }));
+  const navigate = useNavigate();
+  const base = window.config?.apiBase || 'http://localhost:8080';
+  const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const onSave = async () => {
+  const onSave = async (e) => {
+    e.preventDefault();
+
+    if (!currentUser) {
+      setError('Kein eingeloggter Lehrer gefunden.');
+      return;
+    }
+
     setSaving(true);
     setError(null);
+
     try {
-      const base = window.config?.apiBase || 'http://localhost:8080';
-      // Adjust payload/endpoint to your backend model
-      const res = await fetch(`${base}/courses`, {
+      const res = await fetch(`${base}/api/courses`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          teacherId: currentUser.id,
           name: form.name,
           numberOfStudents: Number(form.students || 0),
-          numberOfLeos: Number(form.leos || 0)
-        })
+          numberOfLeos: Number(form.leos || 0),
+        }),
       });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      // Go back to courses list (Teacher dashboard)
+
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
+      
       navigate('/teacher');
-    } catch (e) {
+    } catch (err) {
+      console.error(err);
       setError('Could not save course. Check backend and try again.');
     } finally {
       setSaving(false);
@@ -44,39 +59,56 @@ export default function AddCourse() {
   };
 
   return (
-    <div>
-      <div className="row" style={{ justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-        <div style={{ fontWeight:700 }}>Teacher Dashboard</div>
-        <Button variant="ghost" onClick={() => (window.history.length > 1 ? navigate(-1) : navigate('/teacher'))}>
-          Back
-        </Button>
-      </div>
+    <div className="add-course">
+      <Card>
+        <h2>Neuen Kurs anlegen</h2>
 
-      <div style={{ display:'flex', justifyContent:'center' }}>
-        <Card style={{ maxWidth: 520, width: '100%' }}>
-          <div style={{ textAlign:'center', fontWeight:600, marginBottom:16 }}>Add new course</div>
+        <form onSubmit={onSave}>
+          <div className="form-group">
+            <label>Kursname</label>
+            <input
+              name="name"
+              value={form.name}
+              onChange={onChange}
+            />
+          </div>
 
-          <Field label="Course Name">
-            <input className="input" placeholder="Value" value={form.name} onChange={onChange('name')} />
-          </Field>
+          <div className="form-group">
+            <label>Anzahl Studenten (optional)</label>
+            <input
+              type="number"
+              name="students"
+              value={form.students}
+              onChange={onChange}
+            />
+          </div>
 
-          <Field label="Number of Students">
-            <input className="input" placeholder="Value" inputMode="numeric"
-                   value={form.students} onChange={onChange('students')} />
-          </Field>
+          <div className="form-group">
+            <label>Anzahl LEOs (optional)</label>
+            <input
+              type="number"
+              name="leos"
+              value={form.leos}
+              onChange={onChange}
+            />
+          </div>
 
-          <Field label="Number of LEOs">
-            <textarea className="input" placeholder="Value"
-                      value={form.leos} onChange={onChange('leos')} />
-          </Field>
+          {error && <p style={{ color: 'red' }}>{error}</p>}
 
-          {error ? <div className="muted" style={{ color:'#dc2626', marginBottom:10 }}>{error}</div> : null}
-
-          <Button variant="primary" onClick={onSave} disabled={saving}>
-            {saving ? 'Saving…' : 'Save'}
+          <Button type="submit" disabled={saving}>
+            {saving ? 'Speichern...' : 'Speichern'}
           </Button>
-        </Card>
-      </div>
+
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => navigate('/teacher')}
+            style={{ marginLeft: 8 }}
+          >
+            Abbrechen
+          </Button>
+        </form>
+      </Card>
     </div>
   );
 }

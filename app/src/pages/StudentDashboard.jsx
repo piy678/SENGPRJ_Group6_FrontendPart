@@ -6,7 +6,6 @@ export default function StudentDashboard() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // Back wie Browser-Back; Fallback auf Landing/Login
     if (window.history.length > 1) navigate(-1);
     else navigate('/');
   };
