@@ -8,9 +8,16 @@ export const Button = ({ children, variant='default', ...rest }) => {
   return <button className={cls.join(' ')} {...rest}>{children}</button>;
 };
 export const Card = ({ children, style }) => <div className="card" style={style}>{children}</div>;
-export const Field = ({ label, children }) => (
-  <div style={{ marginBottom: 12 }}>
-    <div className="muted" style={{ marginBottom: 6 }}>{label}</div>
-    {children}
-  </div>
-);
+export function Field({ label, children }) {
+  return (
+    <div className="field" style={{ marginBottom: 12 }}>
+      {label && (
+        <label style={{ display: 'block', fontSize: 14, marginBottom: 4 }}>
+          {label}
+        </label>
+      )}
+      {children}
+    </div>
+  );
+}
+

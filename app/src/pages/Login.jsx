@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MOCK_USERS } from '../mockUsers.js';
 import { Button, Card } from '../components/UI.jsx';
 
 export default function Login() {
@@ -12,23 +11,36 @@ export default function Login() {
     setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const onSubmit = e => {
+  const onSubmit = async e => {
     e.preventDefault();
+    setError(null);
 
-    const user = MOCK_USERS.find(
-      u => u.username === form.username && u.password === form.password
-    );
-    
-    if (!user) {
-      setError('Falscher Benutzername oder Passwort');
-      return;
+    try {
+      const res = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form)
+      });
+
+      if (!res.ok) {
+        setError("Falscher Benutzername oder Passwort");
+        return;
+      }
+
+      const user = await res.json();
+
+     
+      localStorage.setItem('currentUser', JSON.stringify(user));
+
+      
+      user.role === 'TEACHER'
+        ? navigate('/teacher')
+        : navigate('/student');
+
+    } catch (err) {
+      console.error(err);
+      setError("Backend nicht erreichbar");
     }
-
-    localStorage.setItem('currentUser', JSON.stringify(user));
-
-    user.role === 'TEACHER'
-      ? navigate('/teacher')
-      : navigate('/student');
   };
 
   return (
@@ -45,13 +57,14 @@ export default function Login() {
           {error && <div style={{ color: 'red' }}>{error}</div>}
 
           <Button type="submit">Login</Button>
-           <Button
-          variant="secondary"
-          onClick={() => navigate('/')}
-          style={{ marginTop: 10 }}
-        >
-          Zurück zur Startseite
-        </Button>
+
+          <Button
+            variant="secondary"
+            onClick={() => navigate('/')}
+            style={{ marginTop: 10 }}
+          >
+            Zurück zur Startseite
+          </Button>
         </form>
       </Card>
     </div>
