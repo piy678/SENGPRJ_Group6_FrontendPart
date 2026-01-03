@@ -1,9 +1,25 @@
-
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+
 export default defineConfig({
- plugins: [react({ fastRefresh: true })],
-  base: '/',                    
-  server: { port: 5173, strictPort: true },
-  build: { outDir: 'dist' }
+  plugins: [react({ fastRefresh: true })],
+  base: '/',
+  server: {
+    port: 5173,
+    strictPort: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+
+      '/hello': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
+  build: { outDir: 'dist' },
 });

@@ -13,13 +13,13 @@ export default function StudentDashboard() {
   return (
     <div>
       <div className="row" style={{ justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
-        <div style={{ fontWeight:700 }}>Student Dashboard - Anna</div>
+        <div style={{ fontWeight:700 }}>Student Dashboard</div>
         <Button variant="danger" onClick={handleLogout}>Logout</Button>
       </div>
 
       <Card>
         <div className="muted">
-          Welcome, Anna!<br/>Here you can track your progress in all enrolled courses.
+          Welcome!<br/>Here you can track your progress in all enrolled courses.
         </div>
       </Card>
 
