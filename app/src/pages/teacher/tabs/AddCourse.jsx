@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../../../components/UI.jsx';
 
 export default function AddCourse() {
-  const [form, setForm] = useState({
-    name: '',
-    students: '',
-    leos: '',
-  });
+const [form, setForm] = useState({
+  name: '',
+  students: '',
+  leos: '',
+});
+
+
+  const [students, setStudents] = useState([]);              
+  const [selectedStudentIds, setSelectedStudentIds] = useState([]); 
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -16,7 +20,29 @@ export default function AddCourse() {
   const base = window.config?.apiBase || 'http://localhost:8080';
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-  const onChange = (e) => {
+useEffect(() => {
+  fetch(`${base}/api/users?role=STUDENT`)
+    .then(async (res) => {
+      const data = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(data?.error || `HTTP ${res.status}`);
+      return data;
+    })
+    .then((data) => {
+      console.log("users response:", data);
+      setStudents(Array.isArray(data) ? data : []);
+    })
+    .catch((e) => {
+      console.error(e);
+      setError('Schüler konnten nicht geladen werden');
+      setStudents([]);
+    });
+}, [base]);
+
+
+
+
+
+const onChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
@@ -38,6 +64,7 @@ export default function AddCourse() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           teacherId: currentUser.id,
+          studentIds: selectedStudentIds,
           name: form.name,
           numberOfStudents: Number(form.students || 0),
           numberOfLeos: Number(form.leos || 0),
@@ -64,6 +91,33 @@ export default function AddCourse() {
         <h2>Neuen Kurs anlegen</h2>
 
         <form onSubmit={onSave}>
+        <div style={{ marginTop: 16 }}>
+  <h4>Schüler zuordnen</h4>
+
+  {Array.isArray(students) && students.map((s) => (
+    <label key={s.id} style={{ display: 'block', marginBottom: 4 }}>
+      <input
+        type="checkbox"
+        checked={selectedStudentIds.includes(s.id)}
+        onChange={(e) => {
+          setSelectedStudentIds(prev =>
+            e.target.checked
+              ? [...prev, s.id]
+              : prev.filter(id => id !== s.id)
+          );
+        }}
+      />
+      {' '}
+      {s.firstName} {s.lastName} ({s.username})
+    </label>
+  ))}
+
+  {!Array.isArray(students) && (
+    <p style={{ color: 'red' }}>Schüler konnten nicht geladen werden</p>
+  )}
+</div>
+
+
           <div className="form-group">
             <label>Kursname</label>
             <input

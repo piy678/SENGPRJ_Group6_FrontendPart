@@ -10,11 +10,21 @@ const TABS = ['Manage courses','Create a LEO graph','Conduct assessments','Monit
 
 export default function TeacherDashboard() {
   const [active, setActive] = useState(TABS[0]);
+const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [hello, setHello] = useState(null);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  
+  const openLeoGraph = (courseId) => {
+  setSelectedCourseId(courseId);
+  setActive('Create a LEO graph');   
+};
+
+const openReviews = (courseId) => {
+  setSelectedCourseId(courseId);
+  setActive('Conduct assessments'); 
+};
+
   useEffect(() => {
     const stored = localStorage.getItem('currentUser');
 
@@ -76,10 +86,19 @@ export default function TeacherDashboard() {
         ))}
       </div>
 
-      {active === TABS[0] && <ManageCourses />}
-      {active === TABS[1] && <CreateGraph />}
-      {active === TABS[2] && <ConductAssessments />}
-      {active === TABS[3] && <MonitorProgress />}
+      {active === TABS[0] && (
+  <ManageCourses
+    onOpenLeoGraph={openLeoGraph}
+    onOpenReviews={openReviews}
+    onSelectCourse={setSelectedCourseId}
+    selectedCourseId={selectedCourseId}
+  />
+)}
+
+{active === TABS[1] && <CreateGraph courseId={selectedCourseId} />}
+{active === TABS[2] && <ConductAssessments courseId={selectedCourseId} />}
+{active === TABS[3] && <MonitorProgress courseId={selectedCourseId} />}
+
     </div>
   );
 }

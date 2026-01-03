@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Field } from '../../../components/UI.jsx';
 
-export default function MonitorProgress() {
+export default function MonitorProgress({ courseId }) {
+
   const base = window.config?.apiBase || 'http://localhost:8080';
-  const courseId = 1;
+  //const courseId = 1;
+if (!courseId) {
+  return <div>Bitte zuerst einen Kurs unter “Manage courses” auswählen.</div>;
+}
 
   const [data, setData] = useState([]);
   const [search, setSearch] = useState('');

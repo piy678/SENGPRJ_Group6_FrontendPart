@@ -4,7 +4,7 @@ import { Button, Card } from '../../../components/UI.jsx';
 
 
 
-export default function ManageCourses() {
+export default function ManageCourses({ onOpenLeoGraph, onOpenReviews, onSelectCourse, selectedCourseId }) {
   const navigate = useNavigate();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -59,8 +59,13 @@ export default function ManageCourses() {
               <div className="muted">Lehrer: {course.teacherName}</div>
             </div>
             <div className="row">
-              <Button className="ghost">Manage LEO Graph</Button>
-              <Button className="ghost">Reviews</Button>
+              <Button className="ghost" onClick={() => onOpenLeoGraph(course.id)}>
+  Manage LEO Graph
+</Button>
+
+<Button className="ghost" onClick={() => onOpenReviews(course.id)}>
+  Reviews
+</Button>
               <Button className="ghost" onClick={() => handleDelete(course.id)}>
                 Löschen
               </Button>
@@ -74,6 +79,8 @@ export default function ManageCourses() {
       <Button variant="primary" onClick={() => navigate('/teacher/courses/new')}>
         Create new courses
       </Button>
+     
+
     </div>
   );
 }

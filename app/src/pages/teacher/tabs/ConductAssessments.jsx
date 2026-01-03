@@ -1,61 +1,88 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card } from '../../../components/UI.jsx';
 
-export default function ConductAssessments() {
-  const base = window.config?.apiBase || 'http://localhost:8080';
-  const courseId = 1; 
+export default function ConductAssessments({ courseId }) {
+  if (!courseId) return <div>Bitte zuerst einen Kurs auswählen.</div>;
   const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Teacher
 
   const [students, setStudents] = useState([]);
   const [leos, setLeos] = useState([]);
+  const [assessedDate, setAssessedDate] = useState(() => {
+  const d = new Date();
+  return d.toISOString().slice(0, 10); // "YYYY-MM-DD"
+});
+
   const [currentStudentId, setCurrentStudentId] = useState(null);
-  const [ratings, setRatings] = useState({});
+
+  // ratings pro student
+  const [ratingsByStudent, setRatingsByStudent] = useState({});
+  const ratings = ratingsByStudent[currentStudentId] || {};
+
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    
     Promise.all([
-      fetch(`${base}/api/assessments/course/${courseId}/students`).then(r => r.json()),
-      fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
+      fetch(`/api/assessments/course/${courseId}/students`).then(r => r.json()),
+      fetch(`/api/assessments/course/${courseId}/leos`).then(r => r.json()),
     ])
       .then(([studentsData, leosData]) => {
         setStudents(studentsData);
         setLeos(leosData);
-        if (studentsData.length > 0) {
-          setCurrentStudentId(studentsData[0].id);
-        }
+        if (studentsData.length > 0) setCurrentStudentId(studentsData[0].id);
       })
       .catch(err => {
         console.error(err);
         setError('Daten konnten nicht geladen werden.');
       });
-  }, [base, courseId]);
+  }, [courseId]);
 
   const setRating = (leoId, status) => {
-    setRatings(prev => ({
+    setRatingsByStudent(prev => ({
       ...prev,
-      [leoId]: status,
+      [currentStudentId]: {
+        ...(prev[currentStudentId] || {}),
+        [leoId]: status,
+      },
     }));
+  };
+
+  const clearRating = (leoId) => {
+    setRatingsByStudent(prev => {
+      const copy = { ...(prev[currentStudentId] || {}) };
+      delete copy[leoId];
+      return { ...prev, [currentStudentId]: copy };
+    });
   };
 
   const onSave = async () => {
     if (!currentStudentId || !currentUser) return;
 
-    const entries = leos.map(l => ({
-      leoId: l.id,
-      status: ratings[l.id] || 'NOT_ASSESSED',
-    }));
+    const entries = leos
+      .filter(l => ratings[l.id] && ratings[l.id] !== 'NOT_ASSESSED')
+      .map(l => ({
+        leoId: Number(l.id),
+        status: ratings[l.id], 
+       assessedAt: `${assessedDate}T00:00:00`,
+      }));
+
+    const payload = {
+      teacherId: Number(currentUser.id),
+      entries,
+    };
+
+    console.log('POST payload', payload);
 
     try {
-      const res = await fetch(`${base}/api/assessments/student/${currentStudentId}`, {
+      const res = await fetch(`/api/assessments/student/${currentStudentId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          teacherId: currentUser.id,
-          entries,
-        }),
+        body: JSON.stringify(payload),
       });
-      if (!res.ok) throw new Error('HTTP ' + res.status);
+
+      if (!res.ok) {
+        const txt = await res.text().catch(() => '');
+        throw new Error(`HTTP ${res.status} ${txt}`);
+      }
       alert('Assessments gespeichert');
     } catch (e) {
       console.error(e);
@@ -78,7 +105,9 @@ export default function ConductAssessments() {
           </Button>
         ))}
       </div>
+
       <div className="spacer"></div>
+
       <Card>
         <div className="muted" style={{ marginBottom: 8 }}>
           {currentStudent ? `${currentStudent.name} — LEO Ratings` : 'Keine Studenten'}
@@ -86,25 +115,31 @@ export default function ConductAssessments() {
         {leos.map((l, i) => (
           <div key={l.id} style={{ padding: '10px 0', borderBottom: '1px solid var(--border)' }}>
             <div style={{ fontWeight: 600 }}>
-              {i + 1}. {l.title}
+              {i + 1}. {l.title /* oder l.name - je nach Backend */}
             </div>
-            <div className="row">
-              {['NOT_REACHED', 'PARTIALLY_REACHED', 'REACHED', 'NOT_ASSESSED'].map(r => (
+
+            <div className="row" style={{ gap: 12, alignItems: 'center' }}>
+              {['NOT_REACHED', 'PARTIALLY_REACHED', 'REACHED'].map(r => (
                 <label key={r} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                   <input
                     type="radio"
-                    name={`leo-${l.id}`}
+                    name={`leo-${l.id}-student-${currentStudentId}`}
                     checked={ratings[l.id] === r}
                     onChange={() => setRating(l.id, r)}
-                  />{' '}
+                  />
                   {r}
                 </label>
               ))}
+
+              {/* optional: Auswahl löschen */}
+              <Button onClick={() => clearRating(l.id)}>Clear</Button>
             </div>
           </div>
         ))}
+
         <div className="spacer"></div>
         {error && <div style={{ color: 'red' }}>{error}</div>}
+
         <Button variant="primary" onClick={onSave}>
           Save Review
         </Button>
