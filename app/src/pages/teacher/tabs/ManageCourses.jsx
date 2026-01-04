@@ -31,6 +31,14 @@ export default function ManageCourses({ onOpenLeoGraph, onOpenReviews, onSelectC
       .finally(() => setLoading(false));
   }, [teacherId, base]);
 
+  const onDelete = async (id) => {
+  const res = await fetch(`${base}/api/courses/${id}`, { method: 'DELETE' });
+  if (!res.ok && res.status !== 204) throw new Error(`HTTP ${res.status}`);
+
+  setCourses(prev => prev.filter(c => c.id !== id)); 
+};
+
+
   const handleDelete = async (id) => {
     try {
       const res = await fetch(`${base}/api/courses/${id}`, {
