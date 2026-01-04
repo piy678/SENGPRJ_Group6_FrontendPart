@@ -13,6 +13,7 @@ if (!courseId) {
   const [search, setSearch] = useState('');
   const [min, setMin] = useState(0);
   const [sort, setSort] = useState('Name');
+  const [grades, setGrades] = useState({}); 
 
   useEffect(() => {
     fetch(`${base}/api/progress/course/${courseId}`)
@@ -22,6 +23,28 @@ if (!courseId) {
         console.error(err);
       });
   }, [base, courseId]);
+
+  useEffect(() => {
+  if (!data?.length) return;
+
+  const ids = data.map(d => d.studentId).filter(Boolean);
+
+  Promise.all(
+    ids.map(id =>
+      fetch(`${base}/api/assessments/course/${courseId}/student/${id}/grade`)
+        .then(res => (res.ok ? res.json() : null))
+        .then(g => [id, g])
+    )
+  ).then(entries => {
+    const map = {};
+    for (const [id, g] of entries) {
+      if (g) map[id] = g;
+    }
+    setGrades(map);
+  }).catch(console.error);
+
+}, [data, base, courseId]);
+
 
   const filtered = data
     .filter(d => d.name.toLowerCase().includes(search.toLowerCase()))
@@ -66,31 +89,34 @@ if (!courseId) {
       </div>
       <div className="spacer"></div>
       <Card>
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Achieved</th>
-              <th>Partially</th>
-              <th>Not Assessed</th>
-              <th>Total</th>
-              <th>Progress</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.map((r, i) => (
-              <tr key={i}>
-                <td>{r.name}</td>
-                <td>{r.achieved}</td>
-                <td>{r.partially}</td>
-                <td>{r.notAssessed}</td>
-                <td>{r.total}</td>
-                <td>{r.progress}%</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Grade</th>
+        <th>Achieved</th>
+        <th>Partially</th>
+        <th>Not Assessed</th>
+        <th>Total</th>
+        <th>Progress</th>
+      </tr>
+    </thead>
+    <tbody>
+      {filtered.map((r, i) => (
+        <tr key={i}>
+          <td>{r.name}</td>
+          <td>{grades[r.studentId]?.grade?.toFixed(1) ?? '—'}</td>
+          <td>{r.achieved}</td>
+          <td>{r.partially}</td>
+          <td>{r.notAssessed}</td>
+          <td>{r.total}</td>
+          <td>{r.progress}%</td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</Card>
+
     </div>
   );
 }
