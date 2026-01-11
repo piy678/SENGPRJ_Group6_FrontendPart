@@ -1,0 +1,16 @@
+services:
+  backend:
+    image: leo-backend
+    container_name: leo-backend
+    ports:
+      - "8080:8080"
+
+  frontend:
+    image: leo-frontend
+    container_name: leo-frontend
+    ports:
+      - "5174:5173"
+    environment:
+      - VITE_API=http://leo-backend:8080
+    depends_on:
+      - backend
