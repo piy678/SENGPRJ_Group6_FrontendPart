@@ -100,7 +100,8 @@ if (!courseId) {
         <th>Grade</th>
         <th>Achieved</th>
         <th>Partially</th>
-        <th>Not Assessed</th>
+       <th>Unmarked</th>
+  <th>Not Achieved</th>
         <th>Total</th>
         <th>Progress</th>
       </tr>
@@ -112,7 +113,8 @@ if (!courseId) {
           <td>{grades[r.studentId]?.grade?.toFixed(1) ?? '—'}</td>
           <td>{r.achieved}</td>
           <td>{r.partially}</td>
-          <td>{r.notAssessed}</td>
+          <td>{r.unmarked ?? 0}</td>
+  <td>{r.notAchieved ?? 0}</td>
           <td>{r.total}</td>
           <td>{r.progress}%</td>
         </tr>
