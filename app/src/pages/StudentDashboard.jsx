@@ -4,7 +4,12 @@ import { Button, Card } from '../components/UI.jsx';
 
 export default function StudentDashboard() {
   const navigate = useNavigate();
-  const base = window.config?.apiBase || 'http://localhost:8080';
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
+
 
   const currentUser = useMemo(() => JSON.parse(localStorage.getItem('currentUser')), []);
   const studentName = currentUser ? `${currentUser.firstName} ${currentUser.lastName}` : '';

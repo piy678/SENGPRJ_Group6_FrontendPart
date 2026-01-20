@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card } from '../../../components/UI.jsx';
 
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
+
 export default function ConductAssessments({ courseId }) {
   if (!courseId) return <div>Bitte zuerst einen Kurs auswählen.</div>;
   const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Teacher
@@ -22,8 +28,9 @@ export default function ConductAssessments({ courseId }) {
 
   useEffect(() => {
     Promise.all([
-      fetch(`/api/assessments/course/${courseId}/students`).then(r => r.json()),
-      fetch(`/api/assessments/course/${courseId}/leos`).then(r => r.json()),
+      fetch(`${base}/api/assessments/course/${courseId}/students`).then(r => r.json()),
+fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
+
     ])
       .then(([studentsData, leosData]) => {
         setStudents(studentsData);
@@ -73,11 +80,12 @@ export default function ConductAssessments({ courseId }) {
     console.log('POST payload', payload);
 
     try {
-      const res = await fetch(`/api/assessments/student/${currentStudentId}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      });
+      const res = await fetch(`${base}/api/assessments/student/${currentStudentId}`, {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify(payload),
+});
+
 
       if (!res.ok) {
         const txt = await res.text().catch(() => '');

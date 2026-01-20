@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../components/UI.jsx';
 
+
+
 export default function Login() {
   const [form, setForm] = useState({ username: '', password: '' });
   const [error, setError] = useState(null);
@@ -15,8 +17,14 @@ export default function Login() {
     e.preventDefault();
     setError(null);
 
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
+
     try {
-      const res = await fetch("http://localhost:8080/api/auth/login", {
+      const res = await fetch(`${base}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(form)
@@ -58,13 +66,15 @@ export default function Login() {
 
           <Button type="submit">Login</Button>
 
-          <Button
-            variant="secondary"
-            onClick={() => navigate('/')}
-            style={{ marginTop: 10 }}
-          >
-            Zurück zur Startseite
-          </Button>
+<Button
+  type="button"
+  variant="secondary"
+  onClick={() => navigate('/')}
+  style={{ marginTop: 10 }}
+>
+  Zurück zur Startseite
+</Button>
+
         </form>
       </Card>
     </div>

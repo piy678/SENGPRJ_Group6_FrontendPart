@@ -3,7 +3,11 @@ import { Button, Card, Field } from '../../../components/UI.jsx';
 
 export default function MonitorProgress({ courseId }) {
 
-  const base = window.config?.apiBase || 'http://localhost:8080';
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
   //const courseId = 1;
 if (!courseId) {
   return <div>Bitte zuerst einen Kurs unter “Manage courses” auswählen.</div>;
