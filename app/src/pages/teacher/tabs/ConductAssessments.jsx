@@ -20,6 +20,14 @@ export default function ConductAssessments({ courseId }) {
 
   const [currentStudentId, setCurrentStudentId] = useState(null);
 
+  const STATUS_OPTIONS = [
+  { value: 'UNMARKED', label: 'Unmarked' },
+  { value: 'NOT_REACHED', label: 'Not Reached' },
+  { value: 'PARTIALLY_REACHED', label: 'Partially Reached' },
+  { value: 'REACHED', label: 'Reached' },
+];
+
+
   // ratings pro student
   const [ratingsByStudent, setRatingsByStudent] = useState({});
   const ratings = ratingsByStudent[currentStudentId] || {};
@@ -126,21 +134,21 @@ fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
               {i + 1}. {l.title /* oder l.name - je nach Backend */}
             </div>
 
-            <div className="row" style={{ gap: 12, alignItems: 'center' }}>
-              {['NOT_REACHED', 'PARTIALLY_REACHED', 'REACHED'].map(r => (
-                <label key={r} style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                  <input
-                    type="radio"
-                    name={`leo-${l.id}-student-${currentStudentId}`}
-                    checked={ratings[l.id] === r}
-                    onChange={() => setRating(l.id, r)}
-                  />
-                  {r}
-                </label>
-              ))}
+<div className="row" style={{ gap: 12, alignItems: 'center' }}>
+  {STATUS_OPTIONS.map(opt => (
+    <label key={opt.value} style={{ marginRight: 12 }}>
+      <input
+        type="radio"
+        name={`rating-${l.id}`}
+        checked={(ratings[l.id] ?? 'UNMARKED') === opt.value}
+        onChange={() => setRating(l.id, opt.value)}
+      />
+      {opt.label}
+    </label>
+  ))}
 
               {/* optional: Auswahl löschen */}
-              <Button onClick={() => clearRating(l.id)}>Clear</Button>
+              <Button onClick={() => setRating(l.id, 'UNMARKED')}>Clear</Button>
             </div>
           </div>
         ))}
