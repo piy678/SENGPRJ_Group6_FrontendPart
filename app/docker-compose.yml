@@ -1,15 +1,17 @@
 services:
   backend:
     build:
-      context: ./SENGPRJ_Group6
+      context: /home/ubuntu/SENGPRJ_Group6
       dockerfile: Dockerfile
     container_name: leo-backend
+    env_file:
+      - /home/ubuntu/SENGPRJ_Group6/.env
     ports:
       - "8080:8080"
 
   frontend:
     build:
-      context: ./SENGPRJ_Group6_FrontendPart/app
+      context: /home/ubuntu/SENGPRJ_Group6_FrontendPart/app
       dockerfile: Dockerfile
       args:
         - VITE_API=http://13.53.169.202:8080
