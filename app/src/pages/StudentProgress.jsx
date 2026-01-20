@@ -98,9 +98,9 @@ const suggestionStyle = (s) => {
         <div className="row" style={{ alignItems:'center', gap:16 }}>
           <div className="muted">Total LEOs: {summary.totalLeos}</div>
           <div>Achieved: <b>{summary.achieved}</b></div>
-          <div>Partially: <b>{summary.partially}</b></div>
+          <div>Partially Achieved: <b>{summary.partially}</b></div>
           <div>Not achieved: <b>{summary.notAchieved}</b></div>
-          <div>Unrated: <b>{summary.unrated}</b></div>
+          <div>Unmarked: <b>{summary.unrated}</b></div>
         </div>
       </Card>
 
