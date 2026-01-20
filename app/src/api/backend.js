@@ -1,5 +1,9 @@
 
-const API_BASE_URL = "http://localhost:8080"; 
+const API_BASE_URL =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
 export async function fetchUsers() {
   const response = await fetch(`${API_BASE_URL}/api/users`);
 
@@ -61,7 +65,7 @@ export async function getCoursesForTeacher(teacherId) {
   return res.json();
 }
 
-export async function createCourse({ teacherId, name }) {
+export async function createCourseForTeacher({ teacherId, name }) {
   const res = await fetch(`${API_BASE_URL}/api/courses`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

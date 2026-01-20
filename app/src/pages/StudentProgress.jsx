@@ -4,7 +4,12 @@ import { Button, Card } from '../components/UI.jsx';
 
 export default function StudentProgress() {
   const nav = useNavigate();
-  const base = window.config?.apiBase || 'http://localhost:8080';
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
+
 
   const currentUser = JSON.parse(localStorage.getItem('currentUser')); 
   const [summary, setSummary] = useState(null);

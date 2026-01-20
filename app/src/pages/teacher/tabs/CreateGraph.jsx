@@ -17,8 +17,11 @@ const [requires, setRequires] = useState([]);
 const [deleteDialog, setDeleteDialog] = useState(null);
 
 
-const base = window.config?.apiBase || 'http://localhost:8080';
- 
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
   
 
 if (!courseId) {
@@ -168,7 +171,7 @@ const filteredLeos = leos.filter(l => {
 
   return (
   <div className="grid" style={{ gridTemplateColumns: '1fr 1fr' }}>
-    {/* ✅ Dependency Graph in eigene Card, damit das Grid nicht kaputt geht */}
+    {/* Dependency Graph in eigene Card, damit das Grid nicht kaputt geht */}
     <Card>
       <div style={{ fontWeight: 600, marginBottom: 8 }}>Dependency Graph</div>
 
@@ -247,7 +250,7 @@ const filteredLeos = leos.filter(l => {
                       flexWrap: 'wrap',
                     }}
                   >
-                    {/* ✅ klickbar für Details + Requires */}
+                    {/* klickbar für Details + Requires */}
                     <span
                       style={{ cursor: 'pointer', textDecoration: 'underline' }}
                       onClick={() => openLeo(l)}

@@ -45,7 +45,11 @@ const openReviews = (courseId) => {
 
  
   useEffect(() => {
-    const base = window.config?.apiBase || 'http://localhost:8080';
+    const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
     fetch(base + '/hello')
       .then(r => r.text())
       .then(setHello)

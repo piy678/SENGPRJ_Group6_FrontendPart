@@ -10,7 +10,11 @@ export default function ManageCourses({ onOpenLeoGraph, onOpenReviews, onSelectC
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const base = window.config?.apiBase || 'http://localhost:8080';
+const base =
+  window?.config?.apiBase ||
+  import.meta.env.VITE_API ||
+  "http://13.53.169.202:8080";
+
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
   const teacherId = currentUser?.id;
 

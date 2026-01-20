@@ -8,9 +8,10 @@
     "dev": "concurrently -k \"cross-env VITE_API=http://localhost:8080 vite\" \"wait-on tcp:8080 http-get://localhost:5173 && electron .\"",
     "start": "electron .",
     "build:fe": "vite build",
-    "web": "vite --host 0.0.0.0 --port 5173",
+    "web": "cross-env VITE_API=${VITE_API:-http://13.53.169.202:8080} vite --host 0.0.0.0 --port 5173",
     "build:app": "electron-builder"
-  },
+  }
+,
   "devDependencies": {
     "@vitejs/plugin-react": "^4.2.0",
     "concurrently": "^8.2.2",
