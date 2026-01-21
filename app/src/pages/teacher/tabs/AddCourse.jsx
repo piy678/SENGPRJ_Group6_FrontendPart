@@ -38,7 +38,7 @@ useEffect(() => {
     })
     .catch((e) => {
       console.error(e);
-      setError('Schüler konnten nicht geladen werden');
+      setError('Failed to load students.');
       setStudents([]);
     });
 }, [base]);
@@ -56,7 +56,7 @@ const onChange = (e) => {
     e.preventDefault();
 
     if (!currentUser) {
-      setError('Kein eingeloggter Lehrer gefunden.');
+      setError('No logged-in teacher found.');
       return;
     }
 

@@ -52,7 +52,7 @@ const requestDelete = async (leo) => {
     await doDelete(leo.id, false);
   } catch (e) {
     console.error(e);
-    setError('Delete check fehlgeschlagen.');
+    setError('Failed to delete LEO.');
   }
 };
 
@@ -84,7 +84,7 @@ const doDelete = async (leoId, force) => {
     setDeleteDialog(null);
   } catch (e) {
     console.error(e);
-    setError('Löschen fehlgeschlagen.');
+    setError('Failed to delete LEO.');
   }
 };
 
@@ -109,7 +109,7 @@ const doDelete = async (leoId, force) => {
 })
 .catch(err => {
   console.error(err);
-  setError('LEOs konnten nicht geladen werden.');
+  setError('Failed to load LEOs.');
 })
 .finally(() => setLoading(false));
 
@@ -137,7 +137,7 @@ const filteredLeos = leos.filter(l => {
 
   const currentUser = JSON.parse(localStorage.getItem('currentUser'));
   if (!currentUser) {
-    setError('Kein eingeloggter Benutzer');
+    setError('Failed to find current user.');
     return;
   }
 
@@ -159,7 +159,7 @@ const filteredLeos = leos.filter(l => {
     setLeos(prev => [...prev, newLeo]);
   } catch (e) {
     console.error(e);
-    setError('LEO konnte nicht gespeichert werden.');
+    setError('Failed to load LEO.');
   }
 };
 

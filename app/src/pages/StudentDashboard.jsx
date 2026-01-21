@@ -29,7 +29,7 @@ const base =
       .then((data) => setProgress(data))
       .catch((e) => {
         console.error(e);
-        setError('Progress konnte nicht geladen werden.');
+        setError('Progress failed to load.');
       });
   }, [base, currentUser?.id]);
 

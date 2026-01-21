@@ -47,7 +47,7 @@ fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
       })
       .catch(err => {
         console.error(err);
-        setError('Daten konnten nicht geladen werden.');
+        setError('Failed to load data.');
       });
   }, [courseId]);
 
@@ -99,10 +99,10 @@ fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
         const txt = await res.text().catch(() => '');
         throw new Error(`HTTP ${res.status} ${txt}`);
       }
-      alert('Assessments gespeichert');
+      alert('Assessments saved');
     } catch (e) {
       console.error(e);
-      setError('Assessments konnten nicht gespeichert werden.');
+      setError('Failed to save assessments.');
     }
   };
 

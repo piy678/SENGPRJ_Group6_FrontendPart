@@ -30,7 +30,7 @@ const base =
       .then(data => setCourses(data))
       .catch(err => {
         console.error(err);
-        setError('Kurse konnten nicht geladen werden.');
+        setError('Failed to load courses.');
       })
       .finally(() => setLoading(false));
   }, [teacherId, base]);
@@ -54,7 +54,7 @@ const base =
       setCourses(prev => prev.filter(c => c.id !== id));
     } catch (e) {
       console.error(e);
-      alert('Kurs konnte nicht gelöscht werden.');
+      alert('Failed to load course.');
     }
   };
 
