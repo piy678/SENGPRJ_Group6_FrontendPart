@@ -15,6 +15,11 @@ const [selectedCourseId, setSelectedCourseId] = useState(null);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
+    const base =
+    window?.config?.apiBase ||
+    import.meta.env.VITE_API ||
+    "http://13.53.169.202:8080";
+
   const openLeoGraph = (courseId) => {
   setSelectedCourseId(courseId);
   setActive('Create a LEO graph');   
@@ -43,18 +48,7 @@ const openReviews = (courseId) => {
     setUser(parsed);
   }, [navigate]);
 
- 
-  useEffect(() => {
-    const base =
-  window?.config?.apiBase ||
-  import.meta.env.VITE_API ||
-  "http://13.53.169.202:8080";
 
-    fetch(base + '/hello')
-      .then(r => r.text())
-      .then(setHello)
-      .catch(() => setHello(null));
-  }, []);
 
   
   const handleLogout = () => {
