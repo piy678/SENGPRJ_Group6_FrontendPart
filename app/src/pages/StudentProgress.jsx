@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Card } from '../components/UI.jsx';
+import { requestJson } from "../api/http.js";
+import { errorMessages, ErrorType } from "../api/errors.js";
+
 
 export default function StudentProgress() {
   const nav = useNavigate();
@@ -39,36 +42,33 @@ const suggestionStyle = (s) => {
 };
 
 
-  useEffect(() => {
-    if (!currentUser) {
-      setError('Kein eingeloggter Student gefunden.');
-      return;
-    }
+useEffect(() => {
+   setError(null);
+  if (!currentUser) {
+    setError("No logged-in student found.");
+    return;
+  }
 
-    fetch(`${base}/api/students/${currentUser.id}/progress`)
-      .then(res => {
-        if (!res.ok) {
-          throw new Error('HTTP ' + res.status);
-        }
-        return res.json();
-      })
-      .then(data => {
-        setSummary({
-          totalLeos: data.totalLeos,
-          achieved: data.achieved,
-          partially: data.partially,
-          notAchieved: data.notAchieved,
-          unrated: data.unrated,
-        });
-        setBlocked(data.blocked || []);
-        setRows(data.leoStatuses || []);
-        setSuggestions(data.suggestions || []);
-      })
-      .catch(err => {
-        console.error(err);
-        setError('Fortschritt konnte nicht geladen werden.');
+  requestJson(`${base}/api/students/${currentUser.id}/progress`)
+    .then(data => {
+      setSummary({
+        totalLeos: data.totalLeos,
+        achieved: data.achieved,
+        partially: data.partially,
+        notAchieved: data.notAchieved,
+        unrated: data.unrated ?? data.unmarked ?? 0,
       });
-  }, [base, currentUser?.id]);
+      setBlocked(data.blocked || []);
+      setRows(data.leoStatuses || []);
+      setSuggestions(data.suggestions || []);
+    })
+    .catch(err => {
+      console.error(err);
+      const type = err?.type ?? ErrorType.SERVER_ERROR;
+      setError(errorMessages[type] ?? errorMessages[ErrorType.SERVER_ERROR]);
+    });
+}, [base, currentUser?.id]);
+
 
   if (error) {
     return (

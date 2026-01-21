@@ -31,7 +31,7 @@ const base =
       });
 
       if (!res.ok) {
-        setError("Falscher Benutzername oder Passwort");
+        setError("false username or password");
         return;
       }
 
@@ -47,7 +47,7 @@ const base =
 
     } catch (err) {
       console.error(err);
-      setError("Backend nicht erreichbar");
+      setError("backend not reachable");
     }
   };
 
@@ -72,7 +72,7 @@ const base =
   onClick={() => navigate('/')}
   style={{ marginTop: 10 }}
 >
-  Zurück zur Startseite
+  Back to the homepage
 </Button>
 
         </form>
