@@ -291,7 +291,11 @@ Contributions included:
 - Testing and debugging
 - Deployment and documentation
 
-Detailed individual contributions are documented in the Moodle submission.
+Detailed individual contributions are documented in the complete project plan and task overview are available here:  
+https://github.com/users/piy678/projects/7
+
+For grading purposes, the GitHub Project board serves as the primary source of
+project management evidence.
 
 ## Personal Development
 
