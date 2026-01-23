@@ -1,5 +1,6 @@
 # LEO-Based Assessment Tool — Frontend
 
+
 ## Overview
 
 This repository contains the **frontend application** for the LEO-Based Assessment Tool, a system designed to support learning outcome (LEO)–based assessment for both learners and teachers.  
@@ -14,6 +15,9 @@ This project is part of the **Software Engineering Project** course (Code Analys
 - suggestion of possible next LEOs to prepare for student
 
 ---
+
+
+
 ## User Handbook / User Guide
 
 This section describes how end users interact with the LEO-Based Assessment Tool frontend.
@@ -62,6 +66,8 @@ Password: password
 Role: Student   
 
 Permissions: View courses, check LEO progress, view recommendations    
+
+
 
 ## Installation / Setup Guide
 
@@ -121,6 +127,8 @@ Run this command **in the terminal from the correct project path**:
 ```bash
 npm run start
 ```
+
+
 
 ## Technical Documentation
 
@@ -190,7 +198,6 @@ and assessment results dynamically.
 - TypeScript for type safety and maintainability
 
 ## Tech Stack
-
 This frontend is built using:
 
 - **Vite** (fast development/build tooling)  
@@ -253,9 +260,17 @@ app/
 
 ---   
 
-### Project Management (PM)
-Project management was conducted using agile methods with iterative development
-(sprints/iterations) and continuous progress tracking.
+
+
+## Project Management (PM)
+
+The project was developed using agile software development practices.
+
+Project management included:
+- Sprint planning and sprint reviews
+- Backlog management and task distribution
+- Time tracking and progress monitoring
+- Regular team coordination
 
 - A GitHub Project board was used for backlog management, task tracking, and iteration planning  
   (including requirements engineering, implementation tasks, testing, deployment, and documentation)
@@ -284,14 +299,15 @@ which were used to complement GitHub Projects for detailed backlog structuring a
 - The main product backlog and sprint backlogs were maintained using
   **Microsoft Azure DevOps Boards**
 - User stories, functional requirements, and non-functional requirements
-  were created, prioritized, and tracked through iterations
-- Each work item was assigned to team members and tracked until completion
+  were created.
+- Each work item was assigned to team members and tracked until completion through GitHub Project Plan.
 
 Azure DevOps Boards (Backlog & Sprints):  
 https://dev.azure.com/BWI-25WS-SEPR-Team06/LEOBasedAssessment/_sprints/backlog/LEOBasedAssessment%20Team/LEOBasedAssessment/Sprint%201
 
-## Evidence for Grading Criteria
 
+
+## Evidence for Grading Criteria
 Evidence for all grading criteria is provided through documented project artifacts,
 repositories, and management tools. The evidence is structured according to the
 three main grading categories defined in the course.
@@ -391,6 +407,8 @@ To work on this project, it is recommended that you have:
 
 - Familiarity with modern frontend frameworks (React/Vite recommended)
 
+  
+
 ## Reflection
 
 During the development of this project, we gained practical experience in designing and implementing a full-stack application with a clear separation of frontend, backend, and database layers.
@@ -414,20 +432,6 @@ Overall, the project helped us strengthen our skills in backend development with
 All required evidence for grading criteria has been submitted via **Moodle** as specified.
 
 
-## Project Management
-
-The project was developed using agile software development practices.
-
-Project management included:
-- Sprint planning and sprint reviews
-- Backlog management and task distribution
-- Time tracking and progress monitoring
-- Regular team coordination
-
-Backlogs and sprint planning were managed using project management tools
-(e.g. Azure DevOps Boards and GitHub Projects), with relevant artifacts
-submitted via Moodle.
-
 
 ## Personal Contribution
 
@@ -450,6 +454,8 @@ task assignments, progress, and completed work per team member.
 Each task in the project board is assigned to specific team members,
 allowing individual contributions to be clearly identified.
 
+
+
 ## Personal Development
 
 Through this project, we developed both technical and personal skills.
@@ -464,6 +470,8 @@ Through this project, we developed both technical and personal skills.
 - Effective team communication and collaboration
 - Time management and task prioritization
 - Problem-solving in a collaborative development environment
+
+
 
 ## Questions:
 Should the tool be web-based (browser) or desktop-based (JavaFX, Electron, etc.)?   
