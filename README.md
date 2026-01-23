@@ -225,7 +225,7 @@ It follows a layered architecture (controller, service, persistence) with role-b
 
 ## Project Structure
 
-text
+```
 app/
 ├── electron/                 # Electron main process
 ├── public/                   # Static assets
@@ -249,6 +249,7 @@ app/
 ├── package.json
 ├── vite.config.js
 └── README.md
+```
 
 ---   
 
