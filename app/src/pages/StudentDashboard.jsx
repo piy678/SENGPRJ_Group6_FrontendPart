@@ -20,8 +20,42 @@ export default function StudentDashboard() {
     ? `${currentUser.firstName} ${currentUser.lastName}`
     : "";
 
-  const [courses, setCourses] = useState([]);
+  
   const [error, setError] = useState(null);
+
+  const [courses, setCourses] = useState([]);
+const [progressByCourseId, setProgressByCourseId] = useState({}); // { [courseId]: {totalLeos, achieved, ...} }
+
+useEffect(() => {
+  if (!currentUser?.id) return;
+
+  requestJson(`${base}/api/students/${currentUser.id}/courses`)
+    .then(async (list) => {
+      setCourses(list || []);
+
+      // progress pro kurs laden
+      const entries = await Promise.all(
+        (list || []).map(async (c) => {
+          try {
+            const p = await requestJson(
+              `${base}/api/students/${currentUser.id}/progress?courseId=${c.id}`
+            );
+            return [c.id, p];
+          } catch (e) {
+            console.error("progress failed for course", c.id, e);
+            return [c.id, null];
+          }
+        })
+      );
+
+      setProgressByCourseId(Object.fromEntries(entries));
+    })
+    .catch((e) => {
+      console.error(e);
+      setError("Courses failed to load.");
+    });
+}, [base, currentUser?.id]);
+
 
   useEffect(() => {
     if (!currentUser?.id) return;
@@ -40,6 +74,9 @@ export default function StudentDashboard() {
     if (window.history.length > 1) navigate(-1);
     else navigate("/");
   };
+
+  
+
 
   return (
     <div>
@@ -76,31 +113,32 @@ export default function StudentDashboard() {
         </Card>
       )}
 
-      {courses.map((c) => (
-        <div key={c.id} style={{ marginBottom: 12 }}>
-          <Card>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <div>
-                <div style={{ fontWeight: 600 }}>{c.name}</div>
-                <div className="muted">Open course progress</div>
-              </div>
+     {courses.map((c) => {
+  const p = progressByCourseId[c.id];
+  const total = p?.totalLeos ?? 0;
+  const achieved = p?.achieved ?? 0;
+  const percent = total > 0 ? Math.round((achieved / total) * 100) : 0;
 
-              <Button
-                variant="primary"
-                onClick={() => navigate(`/student/progress/${c.id}`, { state: { courseName: c.name } })}
-              >
-                view details
-              </Button>
+  return (
+    <Card key={c.id}>
+      <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
+        <div>
+          <div style={{fontWeight:600}}>{c.name}</div>
+          {!p && <div className="muted">Loading progress…</div>}
+          {p && (
+            <div className="muted">
+              Progress: {achieved} of {total} LEOs achieved ({percent}%)
             </div>
-          </Card>
+          )}
         </div>
-      ))}
-    </div>
-  );
+
+        <Button onClick={() => navigate(`/student/progress/${c.id}`)}>
+          view details
+        </Button>
+      </div>
+    </Card>
+    );
+    })}
+  </div>
+);
 }

@@ -8,7 +8,7 @@ const base =
 
 
 export default function ConductAssessments({ courseId }) {
-  if (!courseId) return <div>Bitte zuerst einen Kurs auswählen.</div>;
+  if (!courseId) return <div>Please select a course first.</div>;
   const currentUser = JSON.parse(localStorage.getItem('currentUser')); // Teacher
 
   const [students, setStudents] = useState([]);
