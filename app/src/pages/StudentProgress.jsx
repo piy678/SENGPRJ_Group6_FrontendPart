@@ -1,44 +1,77 @@
-import React, { useEffect, useState } from "react";
-import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { Button, Card } from "../components/UI.jsx";
-import { requestJson } from "../api/http.js";
-import { errorMessages, ErrorType } from "../api/errors.js";
+import React, { useEffect, useState } from 'react';
+import { Button, Card } from '../components/UI.jsx';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+
 
 export default function StudentProgress() {
   const nav = useNavigate();
-  const { courseId } = useParams();
-  const location = useLocation();
+  const base = window.config?.apiBase || 'http://localhost:8080';
 
-  const base =
-    window?.config?.apiBase ||
-    import.meta.env.VITE_API ||
-    "http://13.53.169.202:8080";
-
-  const currentUser = JSON.parse(localStorage.getItem("currentUser"));
-  const courseName = location.state?.courseName || "Course";
-
+  const currentUser = JSON.parse(localStorage.getItem('currentUser')); 
   const [summary, setSummary] = useState(null);
   const [rows, setRows] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
-  const [blocked, setBlocked] = useState([]);
   const [error, setError] = useState(null);
+const [blocked, setBlocked] = useState([]);
+const { courseId } = useParams();
+const location = useLocation();
+const [courseName, setCourseName] = useState(location.state?.courseName || "");
 
-  const fmtDateTime = (iso) => (!iso ? "—" : new Date(iso).toLocaleString());
+
+  const fmtDate = (iso) => {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleDateString();
+};
+
+const fmtDateTime = (iso) => {
+  if (!iso) return '—';
+  return new Date(iso).toLocaleString();
+};
+const suggestionStyle = (s) => {
+  if (!s.hasDependencies) {
+    return { border: '1px solid #ddd', background: '#f3f3f3' }; // grau
+  }
+  if (!s.ready) {
+    return { border: '1px solid #f3b0b0', background: '#fdeaea' }; // rot
+  }
+  return { border: '1px solid #cfe9d6', background: '#e9f7ee' }; // grün
+};
+
+
+
+useEffect(() => {
+  if (courseName) return;
+  if (!currentUser?.id || !courseId) return;
+
+  fetch(`${base}/api/students/${currentUser.id}/courses`)
+    .then(r => r.json())
+    .then(list => {
+      const c = (list || []).find(x => String(x.id) === String(courseId));
+      if (c) setCourseName(c.name);
+      else setCourseName(`Course ${courseId}`);
+    })
+    .catch(() => setCourseName(`Course ${courseId}`));
+}, [base, currentUser?.id, courseId, courseName]);
+
 
   useEffect(() => {
-    setError(null);
+  if (!currentUser) {
+    setError('Kein eingeloggter Student gefunden.');
+    return;
+  }
+  if (!courseId) {
+    setError('Kein Kurs ausgewählt.');
+    return;
+  }
 
-    if (!currentUser) {
-      setError("No logged-in student found.");
-      return;
-    }
-    if (!courseId) {
-      setError("No course selected.");
-      return;
-    }
-
-    requestJson(`${base}/api/students/${currentUser.id}/progress?courseId=${courseId}`)
-      .then((data) => {
+    fetch(`${base}/api/students/${currentUser.id}/progress?courseId=${courseId}`)
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('HTTP ' + res.status);
+        }
+        return res.json();
+      })
+      .then(data => {
         setSummary({
           totalLeos: data.totalLeos,
           achieved: data.achieved,
@@ -50,69 +83,130 @@ export default function StudentProgress() {
         setRows(data.leoStatuses || []);
         setSuggestions(data.suggestions || []);
       })
-      .catch((err) => {
+      .catch(err => {
         console.error(err);
-        const type = err?.type ?? ErrorType.SERVER_ERROR;
-        setError(errorMessages[type] ?? errorMessages[ErrorType.SERVER_ERROR]);
+        setError('Fortschritt konnte nicht geladen werden.');
       });
-  }, [base, currentUser?.id, courseId]);
+}, [base, currentUser?.id, courseId]);
 
   if (error) {
     return (
       <div>
-        <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-          <div style={{ fontWeight: 700 }}>Progress</div>
+        <div className="row" style={{ justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
+          <div style={{ fontWeight:700 }}>Progress</div>
           <Button className="back" onClick={() => nav(-1)}>Back</Button>
         </div>
-        <p style={{ color: "red" }}>{error}</p>
+        <p style={{ color: 'red' }}>{error}</p>
       </div>
     );
   }
 
-  if (!summary) return <div>Lade Fortschritt...</div>;
+  if (!summary) {
+    return <div>Lade Fortschritt...</div>;
+  }
 
   return (
     <div>
-      <div className="row" style={{ justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-        <div style={{ fontWeight: 700 }}>Progress - {courseName}</div>
-        <Button className="back" onClick={() => nav(-1)}>Back</Button>
+      <div className="row" style={{ justifyContent:'space-between', alignItems:'center', marginBottom:12 }}>
+        <div style={{ fontWeight:700 }}>Progress - {courseName || `Course ${courseId}`}</div>
+        <Button className="back" onClick={()=>nav(-1)}>Back</Button>
       </div>
 
       <Card>
-        <div className="muted" style={{ marginBottom: 12 }}>Progress Overview</div>
-        <div className="row" style={{ alignItems: "center", gap: 16 }}>
+        <div className="muted" style={{ marginBottom:12 }}>Progress Overview</div>
+        <div className="row" style={{ alignItems:'center', gap:16 }}>
           <div className="muted">Total LEOs: {summary.totalLeos}</div>
           <div>Achieved: <b>{summary.achieved}</b></div>
-          <div>Partially Achieved: <b>{summary.partially}</b></div>
+          <div>Partially: <b>{summary.partially}</b></div>
           <div>Not achieved: <b>{summary.notAchieved}</b></div>
           <div>Unmarked: <b>{summary.unrated}</b></div>
         </div>
       </Card>
 
       <div className="spacer"></div>
+<Card>
+  <div style={{ fontWeight:600, marginBottom:8 }}>
+    Suggested Next LEOs
+  </div>
+
+  {suggestions.length === 0 && (
+    <div className="muted">No suggestions at the moment.</div>
+  )}
+
+  {suggestions.map((s, i) => (
+    <div
+      key={i}
+      style={{
+  padding: 12,
+  borderRadius: 10,
+  marginBottom: 10,
+  ...suggestionStyle(s)
+}}
+
+    >
+      <div style={{ fontWeight:700 }}>
+        {s.leoTitle}
+      </div>
+
+      <div className="muted">
+        <b>Rationale:</b> {s.rationale}
+      </div>
+
+      <div style={{ fontWeight:700, marginTop:4 }}>
+        {s.ready ? '✓ Ready to start' : '✗ Not ready'}
+      </div>
+    </div>
+  ))}
+</Card>
+{blocked.length > 0 && (
+  <Card>
+    <div style={{ fontWeight:600, marginBottom:8, color:'#b00020' }}>
+      Blocked LEOs
+    </div>
+
+    {blocked.map((b, i) => (
+      <div key={i} style={{
+        padding:12,
+        borderRadius:10,
+        marginBottom:10,
+        border:'1px solid #f3b0b0',
+        background:'#fdeaea'
+      }}>
+        <div style={{ fontWeight:700 }}>{b.leoTitle}</div>
+        <div className="muted">{b.text}</div>
+        <div className="muted"><b>Tip:</b> {b.tip}</div>
+      </div>
+    ))}
+  </Card>
+)}
+
+      <div className="spacer"></div>
 
       <Card>
         <table>
           <thead>
-            <tr>
-              <th>All LEOs</th>
-              <th>Depends on</th>
-              <th>Status</th>
-              <th>Last updated</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((r, i) => (
-              <tr key={i}>
-                <td>{r.title}</td>
-                <td>{r.dependsOn}</td>
-                <td>{r.status}</td>
-                <td>{fmtDateTime(r.lastUpdated)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </Card>
-    </div>
-  );
-}
+  <tr>
+    <th>All LEOs</th>
+    <th>Depends on</th>
+    <th>Status</th>
+    <th>Last updated</th> {/* */}
+  </tr>
+</thead>
+
+  <tbody>
+  {rows.map((r, i) => (
+    <tr key={i}>
+      <td>{r.title}</td>
+      <td>{r.dependsOn}</td>
+      <td>{r.status}</td>
+      <td>{fmtDateTime(r.lastUpdated)}</td> {/* NEU */}
+    </tr>
+  ))}
+</tbody>
+
+
+          </table>
+        </Card>
+      </div>
+    );
+  }

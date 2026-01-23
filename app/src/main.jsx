@@ -13,12 +13,14 @@ import Login from './pages/Login.jsx';
 const router = createBrowserRouter([
   { path: '/', element: <Landing /> },
   { path: '/login', element: <Login /> },
+
   { path: '/student', element: <StudentDashboard /> },
-  { path: '/student/progress', element: <StudentProgress /> },
+  { path: '/student/progress/:courseId', element: <StudentProgress /> },
+
   { path: '/teacher', element: <TeacherDashboard /> },
-  { path: '/teacher/courses/new', element: <AddCourse /> },
-  { path: '*', element: <Login /> }, 
+  { path: '*', element: <Login /> },
 ]);
+
 
 
 createRoot(document.getElementById('root')).render(

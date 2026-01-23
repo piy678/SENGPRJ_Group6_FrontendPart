@@ -25,7 +25,7 @@ const base =
   
 
 if (!courseId) {
-  return <div>Bitte zuerst einen Kurs unter “Manage courses” auswählen.</div>;
+  return <div>Please select a course under ‘Manage courses’ first.</div>;
 }
 
 const openLeo = async (leo) => {
