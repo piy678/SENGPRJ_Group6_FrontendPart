@@ -7,6 +7,12 @@ The tool visualizes student progress, manages LEO structures, and allows teacher
 
 This project is part of the **Software Engineering Project** course (Code Analysis topic) at FHTW.
 
+### Features
+- creation of LEO structure and grade calculation for teachers
+- recording and editing of assessment results for teachers
+- visualization of current standings for learners
+- suggestion of possible next LEOs to prepare for student
+
 ---
 ## User Handbook / User Guide
 
@@ -37,17 +43,55 @@ The application is deployed on an AWS server and can be started using Docker.
 - Docker and Docker Compose installed
 - Java 17 (for local development)
 - Git
+- Node.js (for local frontend development)
 
 ### Setup on AWS Server
 1. Clone the project repository on the AWS EC2 instance
 2. Configure environment variables (database credentials, ports)
 3. Start the application using Docker Compose
-4. The backend and frontend services are started automatically
+```bash
+docker compose up -d
+```
+5. The backend and frontend services are started automatically
 
 ### Local Development (Optional)
 1. Clone the repository
-2. Start the database and backend using Docker Compose
-3. Start the Electron frontend locally
+```bash
+git clone https://github.com/piy678/SENGPRJ_Group6_FrontendPart
+cd SENGPRJ_Group6_FrontendPart
+```
+3. Start the database and backend using Docker Compose
+```bash
+docker compose up -d
+```
+7. The backend and frontend services are started automatically
+Production URL:
+http://13.53.169.202:5174
+
+### Start the Electron frontend locally
+
+## Setup Instructions
+
+### **Install dependencies**
+```bash
+npm install
+```
+```bash
+npm install concurrently --save-dev
+```
+Run the development server (Vite)
+
+Run this in the Visual Studio Code Terminal:
+```bash
+npm run dev
+```
+Start the Electron app
+
+Creates a desktop window and loads the Vite app inside it:
+Run this command **in the terminal from the correct project path**:
+```bash
+npm run start
+```
 
 ## Technical Documentation
 
@@ -58,6 +102,7 @@ This section describes the technical architecture, components, and internal logi
 - Frontend: Electron-based UI using web technologies
 - Database: Neon (managed PostgreSQL cloud database)
 - Deployment: Docker and Docker Compose on AWS EC2
+
 ### Database
 
 The system uses Neon, a managed cloud-based PostgreSQL database.
@@ -115,7 +160,15 @@ and assessment results dynamically.
 - React for component-based UI architecture
 - TypeScript for type safety and maintainability
 
-## Technical Documentation
+## Tech Stack
+
+This frontend is built using:
+
+- **Vite** (fast development/build tooling)  
+- **TypeScript**  
+- **React** 
+- **CSS**
+- **HTML**
 
 The system consists of a Spring Boot backend, an Electron frontend, and a PostgreSQL database.
 It follows a layered architecture (controller, service, persistence) with role-based security and automated grading cascade logic.
@@ -138,18 +191,6 @@ It follows a layered architecture (controller, service, persistence) with role-b
 - Real-time data fetching from backend  
 - Visualization components (graphs, progress indicators)  
 - User-friendly navigation for learners and teachers  
-
----
-
-## Tech Stack
-
-This frontend is built using:
-
-- **Vite** (fast development/build tooling)  
-- **TypeScript**  
-- **React** 
-- **CSS**
-- **HTML**
 
 ---
 
@@ -180,32 +221,126 @@ app/
 ├── vite.config.js
 └── README.md
 
+---   
 
+### Project Management (PM)
+Project management was conducted using agile methods with iterative development
+(sprints/iterations) and continuous progress tracking.
+
+- A GitHub Project board was used for backlog management, task tracking, and iteration planning  
+  (including requirements engineering, implementation tasks, testing, deployment, and documentation)
+- Tasks were organized into iterations and tracked with status updates
+- Responsibilities and progress were clearly assigned to team members
+
+#### Task Planning & Implementation Tracking
+- **GitHub Projects** were used for detailed task planning and implementation tracking
+- Tasks were linked to concrete development activities such as backend implementation,
+  frontend development, testing, deployment, and documentation
+- Task states (e.g., To Do, In Progress, Done) were continuously updated
+
+GitHub Project Board:  
+https://github.com/users/piy678/projects/7
+
+#### Time Tracking & Sprint Reviews
+- Time estimates and actual effort were tracked per task within the project boards
+- Sprint/iteration reviews were conducted after each iteration to evaluate progress,
+  review completed work items, and plan subsequent tasks
+- The backlog was continuously refined based on sprint outcomes and project progress
+
+Additionally, backlog planning and task refinement were performed using **Microsoft Azure DevOps Boards**,
+which were used to complement GitHub Projects for detailed backlog structuring and planning.
+
+#### Backlog & Task Management
+- The main product backlog and sprint backlogs were maintained using
+  **Microsoft Azure DevOps Boards**
+- User stories, functional requirements, and non-functional requirements
+  were created, prioritized, and tracked through iterations
+- Each work item was assigned to team members and tracked until completion
+
+Azure DevOps Boards (Backlog & Sprints):  
+https://dev.azure.com/BWI-25WS-SEPR-Team06/LEOBasedAssessment/_sprints/backlog/LEOBasedAssessment%20Team/LEOBasedAssessment/Sprint%201
+
+## Evidence for Grading Criteria
+
+Evidence for all grading criteria is provided through documented project artifacts,
+repositories, and management tools. The evidence is structured according to the
+three main grading categories defined in the course.
 
 ---
 
-## Setup Instructions
+### Solution (40%)
 
-### **Install dependencies**
-```bash
-npm install
-```
-```bash
-npm install concurrently --save-dev
-```
-Run the development server (Vite)
+**Functionality (30%)**
+- Fully implemented frontend and backend applications
+- Role-based access for teachers and students
+- LEO creation, assessment recording, progress visualization, and recommendations
+- Deployed and runnable system (AWS + Docker)
 
-Run this in the Visual Studio Code Terminal:
-```bash
-npm run dev
-```
-Start the Electron app
+**Quality (10%)**
+- Clean layered architecture (controller, service, repository)
+- Use of Spring Boot, JPA, and React/Electron
+- Validation, error handling, and security checks
+- Unit and integration tests
 
-Creates a desktop window and loads the Vite app inside it:
-Run this command **in the terminal from the correct project path**:
-```bash
-npm run start
-```
+Evidence:
+- Frontend repository: https://github.com/piy678/SENGPRJ_Group6_FrontendPart
+- Backend repository: https://github.com/piy678/SENGPRJ_Group6
+- Deployed system on AWS
+
+---
+### Process (40%)
+
+**Planning & Requirements Engineering**
+- User stories and functional/non-functional requirements defined and tracked
+- Backlog management using Azure DevOps Boards
+
+**Analysis, Design, Implementation & Testing**
+- Iterative development across multiple sprints
+- Continuous implementation and testing
+- Code reviews and refactoring during development
+
+**Teamwork & Project Management**
+- Task assignment and progress tracking
+- Time tracking and sprint reviews
+- Use of GitHub Projects for implementation planning
+
+**Deployment**
+- Docker-based deployment on AWS EC2
+- Environment-based configuration and cloud database (Neon)
+
+Evidence:
+- Azure DevOps Boards (backlog & sprints): https://dev.azure.com/BWI-25WS-SEPR-Team06/LEOBasedAssessment/_sprints/backlog/LEOBasedAssessment%20Team/LEOBasedAssessment/Sprint%201
+- GitHub Project board: https://github.com/users/piy678/projects/7
+- Docker and deployment documentation in repositories
+
+---
+
+### Presentation (20%)
+
+**Presentation (10%)**
+- Structured presentation of the project and system architecture
+- Live demonstration of core features
+
+**Project Reflection (10%)**
+- Written reflection covering challenges, solutions, and lessons learned
+- Evaluation of teamwork, tools, and development process
+
+Evidence:
+- Presentation slides (submitted via Moodle also on Github)
+- Written project reflection document
+
+---
+
+### Source Code
+
+- Frontend and backend source code are maintained in two **separate GitHub repositories**
+- Version control is handled via Git, with a complete commit history documenting
+  the development process
+- Commits and pull requests provide traceability of changes, bug fixes, and feature implementation
+
+Repositories:
+- Frontend: https://github.com/piy678/SENGPRJ_Group6_FrontendPart
+- Backend: https://github.com/piy678/SENGPRJ_Group6
 
 ## Purpose and Background
 
@@ -236,24 +371,6 @@ Deploying the system using Docker on an AWS server and integrating a cloud-based
 
 Overall, the project helped us strengthen our skills in backend development with Spring Boot, REST API design, role-based security, testing strategies, and collaborative software development.
 
-## Evidence for Grading Criteria
-
-Evidence for all grading criteria is provided and documented using multiple tools and artifacts.
-
-### Source Code
-- Frontend and backend source code are maintained in GitHub repositories
-- Commit history and pull requests document the development process
-
-### Project Management (PM)
-Project management was conducted using agile methods.
-
-- A GitHub Project board was used for backlog management, task tracking, and iteration planning  
-  (including requirements engineering, implementation tasks, testing, deployment, and documentation)
-- Tasks were organized into iterations and tracked with status updates
-- Responsibilities and progress were clearly assigned to team members
-
-Additionally, backlog planning and task refinement were performed using **Microsoft Azure DevOps Boards**,
-which were used to complement GitHub Projects for detailed backlog structuring and planning.
 
 ### Deployment & Configuration
 - Deployment was performed using Docker and Docker Compose
@@ -274,43 +391,79 @@ The project was developed using agile software development practices.
 Project management included:
 - Sprint planning and sprint reviews
 - Backlog management and task distribution
-- Time tracking per team member
-- Regular team meetings and coordination
+- Time tracking and progress monitoring
+- Regular team coordination
 
-All project management artifacts (backlog, sprint reviews, time tracking)
-are provided as part of the Moodle submission.
+Backlogs and sprint planning were managed using project management tools
+(e.g. Azure DevOps Boards and GitHub Projects), with relevant artifacts
+submitted via Moodle.
 
 
 ## Personal Contribution
 
-All group members contributed actively to the project.
+All group members contributed actively to the project across multiple areas.
 
 Contributions included:
 - Frontend and backend development
-- API design and integration
+- API design and system integration
 - Testing and debugging
 - Deployment and documentation
 
-Detailed individual contributions are documented in the complete project plan and task overview are available here:  
+Individual responsibilities and contributions are documented in the project plan
+and task tracking system.
+
+Project management and contribution evidence:
 https://github.com/users/piy678/projects/7
 
-For grading purposes, the GitHub Project board serves as the primary source of
-project management evidence.
+For grading purposes, the GitHub Project board provides traceable evidence of
+task assignments, progress, and completed work per team member.
+Each task in the project board is assigned to specific team members,
+allowing individual contributions to be clearly identified.
 
 ## Personal Development
 
 Through this project, we developed both technical and personal skills.
 
-Technical growth included:
-- Full-stack development
-- Cloud deployment with AWS
-- Working with distributed systems
+### Technical Development
+- Full-stack development (frontend and backend integration)
+- Cloud-based deployment using AWS
+- Use of a managed cloud PostgreSQL database (Neon)
+- Working with client–server architectures and distributed components
 
-Personal development included:
-- Team communication
-- Time management
-- Problem-solving in a collaborative environment
+### Personal Development
+- Effective team communication and collaboration
+- Time management and task prioritization
+- Problem-solving in a collaborative development environment
 
+## Questions:
+Should the tool be web-based (browser) or desktop-based (JavaFX, Electron, etc.)?   
+Electron desktop app. Built with web tech, packaged to run locally on Windows/macOS/Linux.   
+
+Do we need to implement authentication or can we assume a single teacher and student?  
+Yes. Support separate accounts and roles for multiple teachers and students.   
+
+How detailed should the LEO structure be (tree hierarchy vs. simple list)?  
+As a graph. Nodes and relationships (not just a simple tree or flat list).   
+
+Should the visualization be graphical (like a dependency tree) or textual (list with status)?  
+Text/list view. A graphic diagram is considered too complex; a list is more precise for this use case.   
+
+Should we store the data locally or in a database (e.g. SQLite, MySQL)?  
+In a database. Use a proper DB (e.g., SQLite/MySQL) rather than local files only.  
+
+Is suggestion logic mandatory or optional (for “next possible LEOs”)?  
+Mandatory. The system must generate recommendations (e.g., next applicable LEOs).   
+
+Should grading levels (“not reached”, “partially reached”, “reached”) be customizable?  
+No. Use fixed levels, with “Unmark” as the fourth level in addition to the existing ones.   
+
+## Related Repository
+
+This frontend application communicates with the backend service of the
+LEO-Based Assessment Tool.
+
+Backend repository:  
+https://github.com/piy678/SENGPRJ_Group6
 
 ## Contributors
 
