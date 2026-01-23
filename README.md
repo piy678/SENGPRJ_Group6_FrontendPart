@@ -36,32 +36,32 @@ The frontend is designed to be intuitive and requires no technical knowledge fro
 
 *Teacher Account*
 
-1.username: teacher1
-Password: password
-2.username: teacher2
-Password: password
-3.username: teacher3
-Password: password
+1.username: teacher1    
+Password: password   
+2.username: teacher2   
+Password: password   
+3.username: teacher3  
+Password: password   
 
-Role: Teacher
-Permissions: Course management, LEO graph creation, student assessment, progress monitoring
+Role: Teacher   
+Permissions: Course management, LEO graph creation, student assessment, progress monitoring   
 
 *Student Account*
 
-1.username:student1
-Password: password
-2.username:student2
-Password: password
-3.username.student3
-Password: password
-4.username:student4
-Password: password
-5.username:student5
-Password: password
+1.username:student1   
+Password: password   
+2.username:student2  
+Password: password   
+3.username.student3   
+Password: password   
+4.username:student4   
+Password: password   
+5.username:student5   
+Password: password   
 
-Role: Student
+Role: Student   
 
-Permissions: View courses, check LEO progress, view recommendations
+Permissions: View courses, check LEO progress, view recommendations    
 
 ## Installation / Setup Guide
 
