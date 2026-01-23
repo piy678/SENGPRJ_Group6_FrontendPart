@@ -225,7 +225,7 @@ It follows a layered architecture (controller, service, persistence) with role-b
 
 ## Project Structure
 
-```text
+text
 app/
 ├── electron/                 # Electron main process
 ├── public/                   # Static assets
