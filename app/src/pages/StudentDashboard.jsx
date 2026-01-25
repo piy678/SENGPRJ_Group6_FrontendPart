@@ -57,19 +57,6 @@ useEffect(() => {
 }, [base, currentUser?.id]);
 
 
-  useEffect(() => {
-    if (!currentUser?.id) return;
-
-    setError(null);
-
-    requestJson(`${base}/api/students/${currentUser.id}/courses`)
-      .then((data) => setCourses(data || []))
-      .catch((e) => {
-        console.error(e);
-        setError("Courses failed to load.");
-      });
-  }, [base, currentUser?.id]);
-
   const handleLogout = () => {
     if (window.history.length > 1) navigate(-1);
     else navigate("/");
