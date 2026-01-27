@@ -56,7 +56,7 @@ Permissions: Course management, LEO graph creation, student assessment, progress
 Password: password   
 2.username:student2  
 Password: password   
-3.username.student3   
+3.username:student3   
 Password: password   
 4.username:student4   
 Password: password   
