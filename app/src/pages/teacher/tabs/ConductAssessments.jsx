@@ -96,7 +96,7 @@ const entries = leos
     if (!res.ok) {
       const data = await res.json().catch(() => null);
       if (res.status === 409 && data?.lockedLeoIds) {
-        setError(`Locked LEOs: ${data.lockedLeoIds.join(', ')}`);
+        setError('An error occurred while saving.');
       } else {
         const txt = await res.text().catch(() => '');
         setError(`Save failed: HTTP ${res.status} ${txt}`);
