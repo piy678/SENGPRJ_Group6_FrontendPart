@@ -18,9 +18,9 @@ const router = createBrowserRouter([
   { path: '/student/*', element: <StudentDashboard /> },
   { path: '/student/progress/:courseId', element: <StudentProgress /> },
 
-  {path: '/teacher*', element: <TeacherDashboard />},
+  { path: '/teacher/*', element: <TeacherDashboard /> },
 
-{path: '/teacher/courses/new', element: <AddCourse />},
+  { path: '/teacher/courses/new', element: <AddCourse /> },
   { path: '*', element: <Navigate to="/login" replace /> },
 ]);
 

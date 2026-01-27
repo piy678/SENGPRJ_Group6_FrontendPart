@@ -43,10 +43,6 @@ useEffect(() => {
     });
 }, [base]);
 
-
-
-
-
 const onChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -93,12 +89,11 @@ const onChange = (e) => {
   return (
     <div className="add-course">
       <Card>
-        <h2>Neuen Kurs anlegen</h2>
+        <h2>Create new course</h2>
 
         <form onSubmit={onSave}>
         <div style={{ marginTop: 16 }}>
-  <h4>Schüler zuordnen</h4>
-
+  <h4>Assign students</h4>
   {Array.isArray(students) && students.map((s) => (
     <label key={s.id} style={{ display: 'block', marginBottom: 4 }}>
       <input
@@ -118,13 +113,13 @@ const onChange = (e) => {
   ))}
 
   {!Array.isArray(students) && (
-    <p style={{ color: 'red' }}>Schüler konnten nicht geladen werden</p>
+    <p style={{ color: 'red' }}>Students could not be loaded</p>
   )}
 </div>
 
 
           <div className="form-group">
-            <label>Kursname</label>
+            <label>Course name</label>
             <input
               name="name"
               value={form.name}
@@ -133,7 +128,7 @@ const onChange = (e) => {
           </div>
 
           <div className="form-group">
-            <label>Anzahl Studenten (optional)</label>
+            <label>Number of students (optional)</label>
             <input
               type="number"
               name="students"
@@ -143,7 +138,7 @@ const onChange = (e) => {
           </div>
 
           <div className="form-group">
-            <label>Anzahl LEOs (optional)</label>
+            <label>Number of LEOs (optional)</label>
             <input
               type="number"
               name="leos"
@@ -164,7 +159,7 @@ const onChange = (e) => {
             onClick={() => navigate('/teacher')}
             style={{ marginLeft: 8 }}
           >
-            Abbrechen
+            Cancel
           </Button>
         </form>
       </Card>

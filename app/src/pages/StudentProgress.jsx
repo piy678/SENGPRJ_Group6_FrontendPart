@@ -60,11 +60,11 @@ useEffect(() => {
 
   useEffect(() => {
   if (!currentUser) {
-    setError('Kein eingeloggter Student gefunden.');
+    setError('Not logged in.');
     return;
   }
   if (!courseId) {
-    setError('Kein Kurs ausgewählt.');
+    setError('No course selected.');
     return;
   }
 
@@ -89,7 +89,7 @@ useEffect(() => {
       })
       .catch(err => {
         console.error(err);
-        setError('Fortschritt konnte nicht geladen werden.');
+        setError('Failed to load progress.');
       });
 }, [base, currentUser?.id, courseId]);
 
@@ -106,7 +106,7 @@ useEffect(() => {
   }
 
   if (!summary) {
-    return <div>Lade Fortschritt...</div>;
+    return <div>Load Progress ...</div>;
   }
 
   return (
