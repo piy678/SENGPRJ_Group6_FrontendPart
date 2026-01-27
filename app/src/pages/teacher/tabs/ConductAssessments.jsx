@@ -13,6 +13,7 @@ export default function ConductAssessments({ courseId }) {
 
   const [students, setStudents] = useState([]);
   const [leos, setLeos] = useState([]);
+
   const [assessedDate, setAssessedDate] = useState(() => {
   const d = new Date();
   return d.toISOString().slice(0, 10); // "YYYY-MM-DD"
@@ -61,24 +62,22 @@ fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
     }));
   };
 
-  const clearRating = (leoId) => {
-    setRatingsByStudent(prev => {
-      const copy = { ...(prev[currentStudentId] || {}) };
-      delete copy[leoId];
-      return { ...prev, [currentStudentId]: copy };
-    });
-  };
-
   const onSave = async () => {
     if (!currentStudentId || !currentUser) return;
 
-    const entries = leos
-      .filter(l => ratings[l.id] && ratings[l.id] !== 'NOT_ASSESSED')
-      .map(l => ({
-        leoId: Number(l.id),
-        status: ratings[l.id], 
-       assessedAt: `${assessedDate}T00:00:00`,
-      }));
+const entries = leos
+  .filter(l => {
+    const status = ratings[l.id] ?? 'UNMARKED';
+    if (status === 'UNMARKED') return false;
+    return true;
+  })
+  .map(l => ({
+    leoId: Number(l.id),
+    status: ratings[l.id] ?? 'UNMARKED', 
+    assessedAt: `${assessedDate}T00:00:00`,
+  }));
+
+
 
     const payload = {
       teacherId: Number(currentUser.id),
@@ -87,26 +86,35 @@ fetch(`${base}/api/assessments/course/${courseId}/leos`).then(r => r.json()),
 
     console.log('POST payload', payload);
 
-    try {
-      const res = await fetch(`${base}/api/assessments/student/${currentStudentId}`, {
-  method: 'POST',
-  headers: { 'Content-Type': 'application/json' },
-  body: JSON.stringify(payload),
-});
+  try {
+    const res = await fetch(`${base}/api/assessments/student/${currentStudentId}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
 
-
-      if (!res.ok) {
+    if (!res.ok) {
+      const data = await res.json().catch(() => null);
+      if (res.status === 409 && data?.lockedLeoIds) {
+        setError(`Locked LEOs: ${data.lockedLeoIds.join(', ')}`);
+      } else {
         const txt = await res.text().catch(() => '');
-        throw new Error(`HTTP ${res.status} ${txt}`);
-      }
-      alert('Assessments saved');
-    } catch (e) {
-      console.error(e);
-      setError('Failed to save assessments.');
-    }
-  };
+        setError(`Save failed: HTTP ${res.status} ${txt}`);
+        return;
 
-  const currentStudent = students.find(s => s.id === currentStudentId);
+      }
+    } else {
+      setError(null);
+      alert('Assessment saved successfully!');
+    }
+  } catch (err) {
+    console.error(err);
+    setError('An error occurred while saving.');
+  }
+};
+
+const currentStudent = students.find(s => s.id === currentStudentId);
+
 
   return (
     <div>
