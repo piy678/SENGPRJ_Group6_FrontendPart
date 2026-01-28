@@ -104,7 +104,12 @@ useEffect(() => {
   const p = progressByCourseId[c.id];
   const total = p?.totalLeos ?? 0;
   const achieved = p?.achieved ?? 0;
-  const percent = total > 0 ? Math.round((achieved / total) * 100) : 0;
+  const partially = p?.partially ?? 0;
+  const effectiveAchieved = achieved + partially * 0.5;
+ const percent =
+  total > 0
+    ? Math.round((effectiveAchieved / total) * 100)
+    : 0;
 
   return (
     <Card key={c.id}>
