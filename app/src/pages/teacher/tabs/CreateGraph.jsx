@@ -84,7 +84,7 @@ const doDelete = async (leoId, force) => {
     setDeleteDialog(null);
   } catch (e) {
     console.error(e);
-    setError('Failed to delete LEO.');
+    setError();
   }
 };
 
@@ -385,10 +385,6 @@ const filteredLeos = leos.filter(l => {
 
       <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end' }}>
         <button onClick={() => setDeleteDialog(null)}>Cancel</button>
-
-        <button onClick={() => setDeleteDialog(null)}>
-          Remove all prerequisites first
-        </button>
 
         <button onClick={() => doDelete(deleteDialog.leo.id, true)}>
           Force delete and update dependents
